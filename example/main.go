@@ -35,9 +35,15 @@ func main() {
 	fmt.Println(policy.Statement[0].Principal.Value())
 	fmt.Println(policy.Statement[0].Condition)
 	(*policy.Statement[0].Condition["Bool"])["acs:MFAPresent"].Set("false")
-	a := p.NewCondition()
+	policy.Statement[0].Condition.Add("DATA", &p.ConditionValueList{
+		"tagName": p.NewValue("helper"),
+	})
+	delete(policy.Statement[0].Condition, "DATA")
+
+	a := p.NewSubCondition()
 	a.Add("acs:SourceIp", p.NewValue("127.0.0.1"))
 	policy.Statement[0].Condition[p.ConditionOperationIPAddress] = a
+
 	fmt.Println(policy.Statement[0].Action)
 	fmt.Println(policy.Statement[0].Effect)
 	fmt.Println(policy.Statement[0].Resource)
@@ -74,11 +80,11 @@ func main() {
 				}),
 				Resource: p.NewValue().Set("arn::uuid:bucket/helper"),
 				Condition: p.Condition{
-					"ops": p.NewCondition().
+					"ops": p.NewSubCondition().
 						Add("aaa", p.NewValue("falsex")),
-					"ops2": p.NewCondition().
+					"ops2": p.NewSubCondition().
 						Add("SourceIPs", p.NewValue("127.0.0.1")),
-					"ops3": p.NewCondition().Add("12", p.NewValue("122", "2333")),
+					"ops3": p.NewSubCondition().Add("12", p.NewValue("122", "2333")),
 				},
 			},
 		},

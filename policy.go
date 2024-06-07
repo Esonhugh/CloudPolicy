@@ -49,7 +49,12 @@ type Condition map[ConditionOperation]*ConditionValueList
 
 type ConditionValueList map[ConditionKey]*Value
 
-func NewCondition() *ConditionValueList {
+func (c *Condition) Add(key ConditionOperation, cl *ConditionValueList) *Condition {
+	(*c)[key] = cl
+	return c
+}
+
+func NewSubCondition() *ConditionValueList {
 	return &ConditionValueList{}
 }
 
