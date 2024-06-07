@@ -9,8 +9,8 @@ type Statement struct {
 	Effect      Effect     `json:"Effect"` // Allow or Deny
 	Principal   *Principal `json:",omitempty"`
 	NoPrincipal *Principal `json:",omitempty"`
-	Action      *CommonValueBlock
-	Resource    *CommonValueBlock
+	Action      *Value
+	Resource    *Value
 	Condition   Condition `json:",omitempty"`
 	Sid         string    `json:",omitempty"`
 }
@@ -47,13 +47,13 @@ const (
 
 type Condition map[ConditionOperation]*ConditionValueList
 
-type ConditionValueList map[ConditionKey]*CommonValueBlock
+type ConditionValueList map[ConditionKey]*Value
 
-func NewConditionValueList() *ConditionValueList {
+func NewCondition() *ConditionValueList {
 	return &ConditionValueList{}
 }
 
-func (c *ConditionValueList) Add(key ConditionKey, value *CommonValueBlock) *ConditionValueList {
+func (c *ConditionValueList) Add(key ConditionKey, value *Value) *ConditionValueList {
 	(*c)[key] = value
 	return c
 }

@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/esonhugh/CloudPolicy"
+	p "github.com/esonhugh/CloudPolicy"
 )
 
 func main() {
@@ -26,7 +26,7 @@ func main() {
   ],
   "Version": "1"
 }`
-	var policy *CloudPolicy.PolicyDocument
+	var policy *p.PolicyDocument
 	err := json.Unmarshal([]byte(TestDocument_AliyunRestartEcsInstanceWithPrincipal), &policy)
 	if err != nil {
 		log.Fatal(err)
@@ -34,10 +34,10 @@ func main() {
 	fmt.Println(policy)
 	fmt.Println(policy.Statement[0].Principal.Value())
 	fmt.Println(policy.Statement[0].Condition)
-	(*policy.Statement[0].Condition["Bool"])["acs:MFAPresent"].SetString("false")
-	a := CloudPolicy.NewConditionValueList()
-	a.Add("acs:SourceIp", CloudPolicy.NewCommonValueBlock().SetString("127.0.0.1"))
-	policy.Statement[0].Condition[CloudPolicy.ConditionOperationIPAddress] = a
+	(*policy.Statement[0].Condition["Bool"])["acs:MFAPresent"].Set("false")
+	a := p.NewCondition()
+	a.Add("acs:SourceIp", p.NewValue("127.0.0.1"))
+	policy.Statement[0].Condition[p.ConditionOperationIPAddress] = a
 	fmt.Println(policy.Statement[0].Action)
 	fmt.Println(policy.Statement[0].Effect)
 	fmt.Println(policy.Statement[0].Resource)
@@ -52,29 +52,33 @@ func main() {
 	fmt.Println(string(res))
 	fmt.Println(policy.Statement[0].Principal.Value())
 
-	newP := CloudPolicy.PolicyDocument{
+	newP := p.PolicyDocument{
 		Version: "1",
-		Statement: []CloudPolicy.Statement{
+		Statement: []p.Statement{
 			{
 				Effect:   "Allow",
-				Action:   CloudPolicy.NewCommonValueBlock().SetString("ecs:RebootInstance"),
-				Resource: CloudPolicy.NewCommonValueBlock().SetString("*"),
-				Condition: CloudPolicy.Condition{
-					CloudPolicy.ConditionOperationBool: CloudPolicy.NewConditionValueList().
-						Add("acs:MFAPresent", CloudPolicy.NewCommonValueBlock().SetString("true")).
-						Add("acs:SourceIp", CloudPolicy.NewCommonValueBlock().SetString("false")),
+				Action:   p.NewValue().Set("ecs:RebootInstance"),
+				Resource: p.NewValue().Set("*"),
+				Condition: p.Condition{
+					"Bool": &p.ConditionValueList{
+						"acs:MFAPresent": p.NewValue("true"),
+						"acs:SourceIp":   p.NewValue("false"),
+					},
 				},
 			},
 			{
-				Effect: CloudPolicy.EffectAllow,
-				Action: CloudPolicy.NewCommonValueBlock().SetStrings(
+				Effect: p.EffectAllow,
+				Action: p.NewValue().Set([]string{
 					"oss:GetObject",
 					"oss:ListObjects",
-				),
-				Resource: CloudPolicy.NewCommonValueBlock().SetString("arn::uuid:bucket/helper"),
-				Condition: CloudPolicy.Condition{
-					CloudPolicy.ConditionOperation("Ops"): CloudPolicy.NewConditionValueList().
-						Add("aaa", CloudPolicy.NewCommonValueBlock().SetString("falsex")),
+				}),
+				Resource: p.NewValue().Set("arn::uuid:bucket/helper"),
+				Condition: p.Condition{
+					"ops": p.NewCondition().
+						Add("aaa", p.NewValue("falsex")),
+					"ops2": p.NewCondition().
+						Add("SourceIPs", p.NewValue("127.0.0.1")),
+					"ops3": p.NewCondition().Add("12", p.NewValue("122", "2333")),
 				},
 			},
 		},

@@ -5,18 +5,18 @@ import (
 	"fmt"
 )
 
-type CommonValueBlock struct {
+type Value struct {
 	value []string
 }
 
-func NewCommonValueBlock() *CommonValueBlock {
-	return &CommonValueBlock{}
+func NewValue(s ...string) *Value {
+	return (&Value{}).Set(s)
 }
 
-var _ json.Marshaler = (*CommonValueBlock)(nil)
-var _ json.Unmarshaler = (*CommonValueBlock)(nil)
+var _ json.Marshaler = (*Value)(nil)
+var _ json.Unmarshaler = (*Value)(nil)
 
-func (t *CommonValueBlock) UnmarshalJSON(data []byte) error {
+func (t *Value) UnmarshalJSON(data []byte) error {
 	var raw interface{}
 	if err := json.Unmarshal(data, &raw); err != nil {
 		return err
@@ -39,24 +39,30 @@ func (t *CommonValueBlock) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (t *CommonValueBlock) MarshalJSON() ([]byte, error) {
+func (t *Value) MarshalJSON() ([]byte, error) {
 	if len(t.value) == 1 {
 		return json.Marshal(t.value[0])
 	}
 	return json.Marshal(t.value)
 }
 
-func (t *CommonValueBlock) SetString(s string) *CommonValueBlock {
-	t.value = []string{s}
+func (t *Value) Set(s any) *Value {
+	if s == nil {
+		return t
+	}
+
+	switch v := s.(type) {
+	case string:
+		t.value = []string{v}
+	case []string:
+		t.value = v
+	default:
+		panic(fmt.Errorf("expected string or array of strings, got %T", v))
+	}
 	return t
 }
 
-func (t *CommonValueBlock) SetStrings(s ...string) *CommonValueBlock {
-	t.value = s
-	return t
-}
-
-func (t *CommonValueBlock) Value() any {
+func (t *Value) Value() any {
 	if len(t.value) == 1 {
 		return t.value[0]
 	}
@@ -64,7 +70,7 @@ func (t *CommonValueBlock) Value() any {
 }
 
 type Principal struct {
-	value map[PrincipalType]*CommonValueBlock
+	value map[PrincipalType]*Value
 	all   bool
 }
 
@@ -91,14 +97,14 @@ func (t *Principal) SetAllowAllPrincipal() {
 	t.all = true
 }
 
-func (t *Principal) SetPrincipal(a PrincipalType, b *CommonValueBlock) {
+func (t *Principal) SetPrincipal(a PrincipalType, b *Value) {
 	if t.value == nil {
-		t.value = make(map[PrincipalType]*CommonValueBlock)
+		t.value = make(map[PrincipalType]*Value)
 	}
-	t.value = map[PrincipalType]*CommonValueBlock{a: b}
+	t.value = map[PrincipalType]*Value{a: b}
 }
 
-func (t *Principal) SetPrincipals(a map[PrincipalType]*CommonValueBlock) {
+func (t *Principal) SetPrincipals(a map[PrincipalType]*Value) {
 	t.value = a
 }
 
