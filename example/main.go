@@ -7,6 +7,7 @@ import (
 	"os"
 
 	p "github.com/esonhugh/CloudPolicy"
+	"github.com/esonhugh/CloudPolicy/const/awspolicy"
 )
 
 func main() {
@@ -62,13 +63,13 @@ func main() {
 		Version: "1",
 		Statement: []p.Statement{
 			{
-				Effect:   "Allow",
+				Effect:   p.EffectAllow,
 				Action:   p.NewValue().Set("ecs:RebootInstance"),
-				Resource: p.NewValue().Set("*"),
+				Resource: p.NewValue("*"),
 				Condition: p.Condition{
 					"Bool": &p.ConditionValueList{
-						"acs:MFAPresent": p.NewValue("true"),
-						"acs:SourceIp":   p.NewValue("false"),
+						awspolicy.AWSRequestTag: p.NewValue("true"),
+						awspolicy.AWSSourceIP:   p.NewValue("127.0.0.1"),
 					},
 				},
 			},
@@ -84,7 +85,8 @@ func main() {
 						Add("aaa", p.NewValue("falsex")),
 					"ops2": p.NewSubCondition().
 						Add("SourceIPs", p.NewValue("127.0.0.1")),
-					"ops3": p.NewSubCondition().Add("12", p.NewValue("122", "2333")),
+					"ops3": p.NewSubCondition().
+						Add("12", p.NewValue("122", "2333")),
 				},
 			},
 		},

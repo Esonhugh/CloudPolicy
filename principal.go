@@ -5,14 +5,7 @@ import "encoding/json"
 // PrincipalType is a string that represents the type of Principal. it should be like "AWS", "Federated", "Service", "CanonicalUser", "RAM", "qcs" .. or any other string.
 type PrincipalType = string
 
-const (
-	PrincipalTypeAWS           PrincipalType = "AWS"
-	PrincipalTypeFederated     PrincipalType = "Federated"
-	PrincipalTypeService       PrincipalType = "Service"
-	PrincipalTypeCanonicalUser PrincipalType = "CanonicalUser"
-	PrincipalTypeRAM           PrincipalType = "RAM"
-	PrincipalTypeQCS           PrincipalType = "qcs"
-)
+const ()
 
 // Principal is a map of PrincipalType and Value. or It will be "*"
 type Principal struct {
