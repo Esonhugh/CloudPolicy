@@ -9,6 +9,10 @@ type CommonValueBlock struct {
 	value []string
 }
 
+func NewCommonValueBlock() *CommonValueBlock {
+	return &CommonValueBlock{}
+}
+
 var _ json.Marshaler = (*CommonValueBlock)(nil)
 var _ json.Unmarshaler = (*CommonValueBlock)(nil)
 
@@ -42,12 +46,14 @@ func (t *CommonValueBlock) MarshalJSON() ([]byte, error) {
 	return json.Marshal(t.value)
 }
 
-func (t *CommonValueBlock) SetString(s string) {
+func (t *CommonValueBlock) SetString(s string) *CommonValueBlock {
 	t.value = []string{s}
+	return t
 }
 
-func (t *CommonValueBlock) SetStrings(s ...string) {
+func (t *CommonValueBlock) SetStrings(s ...string) *CommonValueBlock {
 	t.value = s
+	return t
 }
 
 func (t *CommonValueBlock) Value() any {
