@@ -42,6 +42,21 @@ func (t *CommonValueBlock) MarshalJSON() ([]byte, error) {
 	return json.Marshal(t.value)
 }
 
+func (t *CommonValueBlock) SetString(s string) {
+	t.value = []string{s}
+}
+
+func (t *CommonValueBlock) SetStrings(s ...string) {
+	t.value = s
+}
+
+func (t *CommonValueBlock) Value() any {
+	if len(t.value) == 1 {
+		return t.value[0]
+	}
+	return t.value
+}
+
 type Principal struct {
 	value map[PrincipalType]*CommonValueBlock
 	all   bool
@@ -64,4 +79,26 @@ func (t *Principal) MarshalJSON() ([]byte, error) {
 		return json.Marshal("*")
 	}
 	return json.Marshal(t.value)
+}
+
+func (t *Principal) SetAllowAllPrincipal() {
+	t.all = true
+}
+
+func (t *Principal) SetPrincipal(a PrincipalType, b *CommonValueBlock) {
+	if t.value == nil {
+		t.value = make(map[PrincipalType]*CommonValueBlock)
+	}
+	t.value = map[PrincipalType]*CommonValueBlock{a: b}
+}
+
+func (t *Principal) SetPrincipals(a map[PrincipalType]*CommonValueBlock) {
+	t.value = a
+}
+
+func (t *Principal) Value() any {
+	if t.all {
+		return "*"
+	}
+	return t.value
 }
