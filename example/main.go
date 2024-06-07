@@ -74,10 +74,10 @@ func main() {
 			},
 			{
 				Effect: p.EffectAllow,
-				Action: p.NewValue().Set([]string{
+				Action: p.NewValue().Set(
 					"oss:GetObject",
 					"oss:ListObjects",
-				}),
+				),
 				Resource: p.NewValue().Set("arn::uuid:bucket/helper"),
 				Condition: p.Condition{
 					"ops": p.NewSubCondition().
