@@ -6,13 +6,15 @@ type PolicyDocument struct {
 }
 
 type Statement struct {
-	Effect      Effect     `json:"Effect"` // Allow or Deny
+	Effect      Effect     `json:",omitempty"` // Allow or Deny
 	Principal   *Principal `json:",omitempty"`
 	NoPrincipal *Principal `json:",omitempty"`
-	Action      *Value
-	Resource    *Value
-	Condition   Condition `json:",omitempty"`
-	Sid         string    `json:",omitempty"`
+	Action      *Value     `json:",omitempty"`
+	NotAction   *Value     `json:",omitempty"`
+	Resource    *Value     `json:",omitempty"`
+	NotResource *Value     `json:",omitempty"`
+	Condition   Condition  `json:",omitempty"`
+	Sid         string     `json:",omitempty"`
 }
 
 type Effect = string
