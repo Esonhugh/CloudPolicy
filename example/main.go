@@ -65,7 +65,25 @@ func main() {
 						Add("acs:SourceIp", CloudPolicy.NewCommonValueBlock().SetString("false")),
 				},
 			},
+			{
+				Effect: CloudPolicy.EffectAllow,
+				Action: CloudPolicy.NewCommonValueBlock().SetStrings(
+					"oss:GetObject",
+					"oss:ListObjects",
+				),
+				Resource: CloudPolicy.NewCommonValueBlock().SetString("arn::uuid:bucket/helper"),
+				Condition: CloudPolicy.Condition{
+					CloudPolicy.ConditionOperation("Ops"): CloudPolicy.NewConditionValueList().
+						Add("aaa", CloudPolicy.NewCommonValueBlock().SetString("falsex")),
+				},
+			},
 		},
 	}
 	fmt.Println(newP)
+	res, e = json.Marshal(newP)
+	if e != nil {
+		fmt.Println(e)
+		os.Exit(-2)
+	}
+	fmt.Println(string(res))
 }
