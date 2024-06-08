@@ -54,6 +54,12 @@ func (t *Value) Set(s ...string) *Value {
 	return t
 }
 
+// Append appends the value of the Value object, it allow you to add more than one element to the value and not delete the previous elements.
+func (t *Value) Append(s ...string) *Value {
+	t.value = append(t.value, s...)
+	return t
+}
+
 // Value returns the value of the Value object.
 // it will return the first element if the value has only one element.
 // otherwise, it will return the whole array.

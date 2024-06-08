@@ -18,3 +18,8 @@ type Statement struct {
 	Condition   Condition  `json:",omitempty"`
 	Sid         string     `json:",omitempty"`
 }
+
+// NewPolicy will create a new PolicyDocument object. This is a helper function.
+func NewPolicy() *PolicyDocument {
+	return &PolicyDocument{}
+}

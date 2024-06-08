@@ -16,8 +16,10 @@ const (
 // Condition is a map of ConditionOperation and ConditionValueList.
 type Condition map[ConditionOperation]*ConditionValueList
 
-// ConditionValueList is a map of ConditionKey and Value.
-type ConditionValueList map[ConditionKey]*Value
+// NewCondition creates a new Condition. It's a helper function.
+func NewCondition() *Condition {
+	return &Condition{}
+}
 
 // Add adds a new ConditionOperation and ConditionValueList to the Condition.
 func (c *Condition) Add(key ConditionOperation, cl *ConditionValueList) *Condition {
@@ -30,6 +32,9 @@ func (c *Condition) Del(key ConditionOperation) *Condition {
 	delete(*c, key)
 	return c
 }
+
+// ConditionValueList is a map of ConditionKey and Value.
+type ConditionValueList map[ConditionKey]*Value
 
 // NewSubCondition creates a new ConditionValueList. It's a helper function.
 func NewSubCondition() *ConditionValueList {
